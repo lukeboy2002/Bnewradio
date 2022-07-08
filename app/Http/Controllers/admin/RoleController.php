@@ -31,11 +31,11 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::all();//Get all permissions
+        $permissions = Permission::all(); //Get all permissions
 
         return view('admin.roles.create')
             ->with([
-                'permissions' => $permissions
+                'permissions' => $permissions,
             ]);
     }
 
@@ -48,15 +48,15 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-                'name'=>'required|unique:roles|max:10',
-                'permissions' =>'required',
-            ]
-        );
+            'name' => 'required|unique:roles|max:10',
+            'permissions' => 'required',
+        ]);
+
         $role = new Role();
         $role->name = $request->name;
         $role->save();
 
-        if($request->permissions <> ''){
+        if ($request->permissions != '') {
             $role->permissions()->attach($request->permissions);
         }
 
@@ -90,7 +90,7 @@ class RoleController extends Controller
         return view('admin.roles.edit')
             ->with([
                 'role' => $role,
-                'permissions' => $permissions
+                'permissions' => $permissions,
             ]);
     }
 
@@ -103,15 +103,15 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $role = Role::findOrFail($id);//Get role with the given id
+        $role = Role::findOrFail($id); //Get role with the given id
         //Validate name and permission fields
         $this->validate($request, [
-            'name'=>'required|max:10|unique:roles,name,'.$id,
-            'permissions' =>'required',
+            'name' => 'required|max:10|unique:roles,name,'.$id,
+            'permissions' => 'required',
         ]);
         $input = $request->except(['permissions']);
         $role->fill($input)->save();
-        if($request->permissions <> ''){
+        if ($request->permissions != '') {
             $role->permissions()->sync($request->permissions);
         }
 

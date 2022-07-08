@@ -14,7 +14,7 @@ class Permissions extends Component
         $permissions = Permission::with('roles')->get();
 
         return view('livewire.admin.permissions', [
-            'permissions' => $permissions
+            'permissions' => $permissions,
         ]);
     }
 

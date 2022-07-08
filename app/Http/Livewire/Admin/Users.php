@@ -11,6 +11,7 @@ class Users extends Component
     use WithPagination;
 
     public $showModal = false;
+
     public $search;
 
     public function mount()
@@ -20,7 +21,7 @@ class Users extends Component
 
     public function render()
     {
-        $users = User::when($this->search != '', function($query) {
+        $users = User::when($this->search != '', function ($query) {
             $query->where('username', 'like', '%'.$this->search.'%');
         })
             ->withTrashed()
@@ -28,7 +29,7 @@ class Users extends Component
             ->paginate(10);
 
         return view('livewire.admin.users', [
-            'users' => $users
+            'users' => $users,
         ]);
     }
 

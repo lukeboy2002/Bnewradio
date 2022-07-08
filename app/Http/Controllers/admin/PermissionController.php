@@ -21,7 +21,8 @@ class PermissionController extends Controller
         return view('admin.permissions.index')
             ->with([
                 'permissions' => $permissions,
-            ]);    }
+            ]);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -34,7 +35,7 @@ class PermissionController extends Controller
 
         return view('admin.permissions.create')
             ->with([
-                'roles' => $roles
+                'roles' => $roles,
             ]);
     }
 
@@ -47,14 +48,14 @@ class PermissionController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'=>'required|max:40',
+            'name' => 'required|max:40',
         ]);
         $permission = new Permission();
         $permission->name = $request->name;
         $permission->save();
 
-        if ($request->roles <> '') {
-            foreach ($request->roles as $key=>$value) {
+        if ($request->roles != '') {
+            foreach ($request->roles as $key => $value) {
                 $role = Role::find($value);
                 $role->permissions()->attach($permission);
             }
@@ -90,7 +91,7 @@ class PermissionController extends Controller
         return view('admin.permissions.edit')
             ->with([
                 'permission' => $permission,
-                'roles' => $roles
+                'roles' => $roles,
             ]);
     }
 
@@ -103,15 +104,15 @@ class PermissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $permission = Permission::findOrFail($id);//Get role with the given id
+        $permission = Permission::findOrFail($id); //Get role with the given id
         //Validate name and permission fields
         $this->validate($request, [
-            'name'=>'required',
+            'name' => 'required',
         ]);
 
         $input = $request->except(['roles']);
         $permission->fill($input)->save();
-        if($request->roles <> ''){
+        if ($request->roles != '') {
             $permission->roles()->sync($request->roles);
         }
 
@@ -133,6 +134,5 @@ class PermissionController extends Controller
         $request->session()->flash('success', 'Permission deleted successfully!');
 
         return redirect()->route('admin.permissions.index');
-
     }
 }

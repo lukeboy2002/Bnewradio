@@ -24,7 +24,7 @@ class UserController extends Controller
 
         return view('admin.users.index')
             ->with([
-                'users' => $users
+                'users' => $users,
             ]);
     }
 
@@ -39,7 +39,7 @@ class UserController extends Controller
 
         return view('admin.users.create')
             ->with([
-                'roles' => $roles
+                'roles' => $roles,
             ]);
     }
 
@@ -67,7 +67,7 @@ class UserController extends Controller
                 Rule::unique(User::class),
             ],
             'password' => $this->passwordRules(),
-            'roles' => 'required'
+            'roles' => 'required',
         ]);
 
         $user = User::create([
@@ -76,7 +76,7 @@ class UserController extends Controller
             'password' => Hash::make($request['password']),
         ]);
 
-        if($request->roles <> ''){
+        if ($request->roles != '') {
             $user->roles()->attach($request->roles);
         }
 
@@ -112,6 +112,7 @@ class UserController extends Controller
                 'user' => $user,
                 'roles' => $roles,
             ]);
+
         return view('admin.users.edit');
     }
 
@@ -129,10 +130,9 @@ class UserController extends Controller
         $input = $request->except('roles');
         $user->fill($input)->save();
 
-        if ($request->roles <> '') {
+        if ($request->roles != '') {
             $user->roles()->sync($request->roles);
-        }
-        else {
+        } else {
             $user->roles()->detach();
         }
 
@@ -163,21 +163,23 @@ class UserController extends Controller
 
         return view('admin.users.index')
             ->with([
-                'users' => $users
+                'users' => $users,
             ]);
     }
 
     public function trashedRestore($id)
     {
-        $user  = User::onlyTrashed()->findOrFail($id);
+        $user = User::onlyTrashed()->findOrFail($id);
         $user->restore();
+
         return back();
     }
 
     public function trashedDelete($id)
     {
-        $post  = User::onlyTrashed()->findOrFail($id);
-        $post->forceDelete();
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->forceDelete();
+
         return back();
     }
 
@@ -185,10 +187,11 @@ class UserController extends Controller
     {
         $users = User::all();
         foreach ($users as $user) {
-            if (Cache::has('user-is-online-' . $user->id))
-                echo $user->name . " is online. Last seen: " . Carbon::parse($user->last_seen)->diffForHumans() . " <br>";
-            else
-                echo $user->name . " is offline. Last seen: " . Carbon::parse($user->last_seen)->diffForHumans() . " <br>";
+            if (Cache::has('user-is-online-'.$user->id)) {
+                echo $user->name.' is online. Last seen: '.Carbon::parse($user->last_seen)->diffForHumans().' <br>';
+            } else {
+                echo $user->name.' is offline. Last seen: '.Carbon::parse($user->last_seen)->diffForHumans().' <br>';
+            }
         }
     }
 }

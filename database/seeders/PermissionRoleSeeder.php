@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PermissionRoleSeeder extends Seeder
@@ -17,10 +16,10 @@ class PermissionRoleSeeder extends Seeder
      */
     public function run()
     {
-         //Ask for confirmation to refresh migration
+        //Ask for confirmation to refresh migration
         if ($this->command->confirm('Do you wish to refresh migration before seeding, Make sure it will clear all old data ?')) {
             $this->command->call('migrate:refresh');
-            $this->command->warn("Data deleted, starting from fresh database.");
+            $this->command->warn('Data deleted, starting from fresh database.');
         }
         // Seed the default permissions
         $permissions = Permission::defaultPermissions();
@@ -35,10 +34,10 @@ class PermissionRoleSeeder extends Seeder
             // Explode roles
             $rolesArray = explode(',', $roles);
             // add roles
-            foreach($rolesArray as $role) {
+            foreach ($rolesArray as $role) {
                 $role = Role::firstOrCreate(['name' => trim($role)]);
 
-                if( $role->name == 'Admin' ) {
+                if ($role->name == 'Admin') {
                     // assign all permissions to admin role
                     $role->permissions()->sync(Permission::all());
                     $this->command->info('Admin will have full rights');
@@ -50,37 +49,36 @@ class PermissionRoleSeeder extends Seeder
 
                 $this->createUser($role);
             }
-            $this->command->info('Roles ' . $roles . ' added successfully');
+            $this->command->info('Roles '.$roles.' added successfully');
         } else {
             Role::firstOrCreate(['name' => 'User']);
             $this->command->info('By default, User role added.');
         }
     }
-    /**
-    * Create a user with given role
-    *
-    * @param $role
-    */
 
+    /**
+     * Create a user with given role
+     *
+     * @param $role
+     */
     private function createUser($role)
     {
         $user = User::factory()->create();
         $user->assignRole($role->name);
 
-        $username     = get_initials($user->username);
-        $id        = $user->id.'.png';
-        $path      = '/images/avatars/';
+        $username = get_initials($user->username);
+        $id = $user->id.'.png';
+        $path = '/images/avatars/';
         $imagePath = create_avatar($username, $id, $path);
 
         //save image
         $user->avatar = $imagePath;
         $user->save();
 
-        if( $role->name == 'Admin' ) {
+        if ($role->name == 'Admin') {
             $this->command->info('Admin login details:');
             $this->command->warn('Username : '.$user->email);
             $this->command->warn('Password : "secret"');
         }
     }
-
 }

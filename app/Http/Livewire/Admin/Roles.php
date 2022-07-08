@@ -14,7 +14,7 @@ class Roles extends Component
         $roles = Role::with('permissions')->get();
 
         return view('livewire.admin.roles', [
-            'roles' => $roles
+            'roles' => $roles,
         ]);
     }
 
@@ -35,6 +35,5 @@ class Roles extends Component
     public function close()
     {
         $this->showModal = false;
-
     }
 }

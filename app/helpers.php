@@ -10,7 +10,7 @@ function current_user()
 if (! function_exists('get_initials')) {
     function get_initials(string $name): ?string
     {
-        $words    = explode(" ", $name);
+        $words = explode(' ', $name);
         $initials = null;
         foreach ($words as $w) {
             $initials .= $w[0] ?? '';
