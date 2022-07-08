@@ -37,6 +37,7 @@ class PermissionRoleSeeder extends Seeder
             // add roles
             foreach($rolesArray as $role) {
                 $role = Role::firstOrCreate(['name' => trim($role)]);
+
                 if( $role->name == 'Admin' ) {
                     // assign all permissions to admin role
                     $role->permissions()->sync(Permission::all());
@@ -46,6 +47,7 @@ class PermissionRoleSeeder extends Seeder
                     $role->permissions()->sync(Permission::where('name', 'LIKE', 'view_%')->get());
                 }
                 // create one user for each role
+
                 $this->createUser($role);
             }
             $this->command->info('Roles ' . $roles . ' added successfully');
@@ -64,6 +66,16 @@ class PermissionRoleSeeder extends Seeder
     {
         $user = User::factory()->create();
         $user->assignRole($role->name);
+
+        $username     = get_initials($user->username);
+        $id        = $user->id.'.png';
+        $path      = '/images/avatars/';
+        $imagePath = create_avatar($username, $id, $path);
+
+        //save image
+        $user->avatar = $imagePath;
+        $user->save();
+
         if( $role->name == 'Admin' ) {
             $this->command->info('Admin login details:');
             $this->command->warn('Username : '.$user->email);

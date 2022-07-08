@@ -45,6 +45,16 @@ class CreateNewUser implements CreatesNewUsers
             'password' => Hash::make($input['password']),
         ]);
 
+        //generate image
+        $username     = get_initials($user->username);
+        $id        = $user->id.'.png';
+        $path      = '/images/avatars/';
+        $imagePath = create_avatar($username, $id, $path);
+
+        //save image
+        $user->avatar = $imagePath;
+        $user->save();
+
         $role = Role::select('id')->where('name', 'user')->first();
 
         $user->roles()->attach($role);
