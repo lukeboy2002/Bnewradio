@@ -17,7 +17,7 @@
 
 <body class="antialiased relative h-full">
 <div class="min-h-full">
-    {{--    <x-menus.top />--}}
+        <x-menus.top />
         <x-messages />
 
     <div class="max-w-3xl mx-auto sm:px-6 md:max-w-7xl md:px-8 md:grid md:grid-cols-12 md:gap-8">
